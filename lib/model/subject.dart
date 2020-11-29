@@ -5,5 +5,5 @@ class Subject {
   final String year;
   final String title;
 
-  Subject({@required this.id, @required this.year, @required this.title});
+  const Subject({@required this.id, @required this.year, @required this.title});
 }
