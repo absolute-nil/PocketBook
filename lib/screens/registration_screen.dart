@@ -3,7 +3,10 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pocketbook/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pocketbook/components/rounded_button.dart';
+import 'package:pocketbook/model/http_exception.dart';
+import 'package:pocketbook/providers/auth.dart';
 import 'package:pocketbook/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'register_screen';
@@ -13,10 +16,59 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String email;
   String password;
+
+  void _showErrorDialogue(String error) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text("An Error occoured"),
+              content: Text(error),
+              actions: [
+                FlatButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: Text("Okay"))
+              ],
+            ));
+  }
+
+  void _submit() async {
+    setState(() {
+      showSpinner = true;
+    });
+    try {
+      // Log user in
+      await Provider.of<Auth>(context, listen: false).signup(email, password);
+      setState(() {
+        showSpinner = false;
+        Navigator.of(context).pushReplacementNamed("/");
+      });
+    } on HttpException catch (error) {
+      var errorMessage = "Authentication Failed";
+      if (error.toString().contains("EMAIL_EXISTS")) {
+        errorMessage = "An account with this email already exists";
+      } else if (error.toString().contains("INVALID_EMAIL")) {
+        errorMessage = "This email is not valid";
+      } else if (error.toString().contains("WEAK_PASSWORD")) {
+        errorMessage = "Password is too weak";
+      } else if (error.toString().contains("EMAIL_NOT_FOUND")) {
+        errorMessage = "Couldnt find a user with that email";
+      }
+      if (error.toString().contains("INVALID_PASSWORD")) {
+        errorMessage = "Invalid Password";
+      }
+      _showErrorDialogue(errorMessage);
+    } catch (error) {
+      var errorMessage =
+          "could not authenticate you please try again in a while";
+      _showErrorDialogue(errorMessage);
+    }
+    setState(() {
+      showSpinner = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,28 +127,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               SizedBox(
                 height: 24.0,
               ),
-              RoundedButton(
-                title: 'Register',
-                colour: Colors.blueAccent,
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    if (newUser != null) {
-                      Navigator.pushNamed(context, ProflieScreen.id);
-                    }
-
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-              ),
+              showSpinner
+                  ? CircularProgressIndicator()
+                  : RoundedButton(
+                      title: 'Register',
+                      colour: Colors.blueAccent,
+                      onPressed: _submit,
+                    ),
             ],
           ),
         ),
