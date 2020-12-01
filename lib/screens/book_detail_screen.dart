@@ -209,7 +209,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.download_outlined),
+                    Icon(
+                      Icons.download_outlined,
+                      color: Colors.white,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
