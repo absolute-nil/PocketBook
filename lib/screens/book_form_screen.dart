@@ -183,7 +183,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Book"),
+        title: Text("Add Book"),
         actions: [
           IconButton(
               icon: Icon(Icons.save),
@@ -347,7 +347,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
                         ),
                         TextFormField(
                           initialValue: _savedBook.size.toString(),
-                          decoration: InputDecoration(labelText: "Size"),
+                          decoration:
+                              InputDecoration(labelText: "Size (in KB)"),
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.number,
                           focusNode: _sizeFocusNode,
@@ -385,7 +386,8 @@ class _BookFormScreenState extends State<BookFormScreen> {
                         ),
                         TextFormField(
                           initialValue: _savedBook.duration.toString(),
-                          decoration: InputDecoration(labelText: "Duration"),
+                          decoration:
+                              InputDecoration(labelText: "Duration (in mins)"),
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.number,
                           focusNode: _durationFocusNode,
