@@ -89,7 +89,7 @@ class BookItem extends StatelessWidget {
                     SizedBox(
                       width: 6,
                     ),
-                    Text("${book.size}"),
+                    Text("${book.size} KB"),
                   ],
                 ),
                 Consumer<Book>(

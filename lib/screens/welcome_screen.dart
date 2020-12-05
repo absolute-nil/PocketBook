@@ -41,7 +41,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     style: TextStyle(
                         fontSize: 45.0,
                         fontWeight: FontWeight.w900,
-                        color: Colors.purpleAccent),
+                        color: Colors.pinkAccent),
                   ),
                 ],
               ),
